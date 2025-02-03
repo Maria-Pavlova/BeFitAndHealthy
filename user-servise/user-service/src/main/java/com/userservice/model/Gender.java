@@ -1,5 +1,13 @@
 package com.userservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+
 public enum Gender {
-    MAIL, FEMALE
+    MALE, FEMALE;
+
+    @JsonCreator
+    public  static Gender fromString(String value){
+      return Gender.valueOf(value.toUpperCase());
+    }
 }

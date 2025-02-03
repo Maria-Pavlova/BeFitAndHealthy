@@ -5,44 +5,52 @@ import com.userservice.dto.UserResponse;
 import com.userservice.model.User;
 import com.userservice.model.UserStatus;
 import com.userservice.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse register(RegisterRequest request) {
         User user = User.builder()
-                .id(UUID.randomUUID())
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .password(request.password())
+                .password(passwordEncoder.encode(request.password()))
                 .gender(request.gender())
                 .age(request.age())
                 .role(request.role())
                 .status(UserStatus.ACTIVE)
                 .build();
         userRepository.save(user);
-        log.info("Successfully registered user");
-        return new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(),
-                user.getEmail(), user.getAge(), user.getGender(), user.getRole(), user.getStatus());
+        log.info("Successfully registered user with id {}", user.getId());
+        return mapToUserResponse(user);
     }
 
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(),
-                        user.getEmail(), user.getAge(), user.getGender(), user.getRole(), user.getStatus()))
-                .toList();
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::mapToUserResponse).toList();
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId().toString())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .age(user.getAge())
+                .gender(user.getGender())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
     }
 }
