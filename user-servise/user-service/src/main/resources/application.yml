@@ -29,8 +29,11 @@ spring:
         format_sql: true
         show_sql: true
     defer-datasource-initialization: true
+
   #Cloudinary Properties
   #cloudinary:
   #api-key:
   #api-secret:
   #cloud-name:
+server:
+  port: 8080

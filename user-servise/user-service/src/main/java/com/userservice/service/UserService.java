@@ -2,6 +2,7 @@ package com.userservice.service;
 
 import com.userservice.dto.RegisterRequest;
 import com.userservice.dto.UserResponse;
+import com.userservice.exception.UserNotFoundException;
 import com.userservice.model.User;
 import com.userservice.model.UserStatus;
 import com.userservice.repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,16 +43,26 @@ public class UserService {
                 .map(this::mapToUserResponse).toList();
     }
 
+    public UserResponse getByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty())
+            throw new UserNotFoundException("User not found");
+        return mapToUserResponse(user.get());
+    }
+
     private UserResponse mapToUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId().toString())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .age(user.getAge())
                 .gender(user.getGender())
                 .role(user.getRole())
                 .status(user.getStatus())
                 .build();
     }
+
+
 }

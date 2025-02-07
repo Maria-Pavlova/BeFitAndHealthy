@@ -1,5 +1,6 @@
 package com.authservice.controller;
 
+import com.authservice.dto.*;
 import com.authservice.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,14 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
-        return ResponseEntity.ok(authenticationService.register(request));
+    public ResponseEntity<UserResponse> register(@RequestBody RegisterRequest request){
+        UserResponse response = authenticationService.register(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        AuthenticationResponse authenticate = authenticationService.authenticate(request);
+        return ResponseEntity.ok(authenticate);
     }
 }
