@@ -1,1 +1,1 @@
-# BeFitAndHealty
+BeFitAndHealthy – A microservices-based fitness and wellness application being developed with Spring Boot, Spring Security, and React. The platform will allow users to track their health metrics, access workout videos, meal plans, and wellness articles. It will include role-based access with trainers and nutritionists contributing content. The backend follows a REST API architecture with API Gateway, Eureka Service Discovery, and secure authentication.
